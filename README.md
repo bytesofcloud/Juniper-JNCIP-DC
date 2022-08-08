@@ -7,7 +7,7 @@ This series of configurations were configured for the JUNIPER JNCIP-DC examinati
 <i> Virtualized Network Devices:</i>
 <ul>
 <li>Vendor:: Juniper</li>
-<li>Model:: vQFX<</li>
+<li>Model:: vQFX</li>
 <li>OS Version:: Junos: 18.4R1.8</li>
 </ul><p>
 <i>Virtualization Platform:: </i>
