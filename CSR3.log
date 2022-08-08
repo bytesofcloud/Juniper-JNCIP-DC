@@ -1,0 +1,73 @@
+﻿//// CSR3 \\\\
+
+set system login user admin uid 1776
+set system login user admin class super-user
+set system login user admin authentication encrypted-password "$6$IoqyDmXH$kcieyBvtjhqXMZfnaT0gfiNGxI9IHUH9w3ReITBHADv.OWCsaUR9r210wlEQf3inDvGotevQ.0NX2fLFdmV9H."
+set system root-authentication encrypted-password "$6$zwOVApPC$CE6426N.JwI5bICCK6c6NLzImwGPKZHXFH7usdQYK4uK/EUGx50yWsJAFLlPJECfW8H8H921gYd3PLexlH1Rj/"
+set system services ssh root-login allow
+set system services ssh protocol-version v2
+set system services netconf ssh
+set system host-name CSR3
+set system domain-name bytesofcloud.local
+set system domain-search bytesofcloud.local
+set system time-zone America/Chicago
+set system management-instance
+set system syslog user * any emergency
+set system syslog file messages any notice
+set system syslog file messages authorization info
+set system syslog file interactive-commands interactive-commands any
+set system extensions providers juniper license-type juniper deployment-scope commercial
+set system extensions providers chef license-type juniper deployment-scope commercial
+set interfaces xe-0/0/0 unit 0 description CSR1
+set interfaces xe-0/0/0 unit 0 family inet address 172.16.255.2/30
+set interfaces xe-0/0/1 unit 0 description CSR2
+set interfaces xe-0/0/1 unit 0 family inet address 172.16.255.18/30
+set interfaces xe-0/0/2 unit 0 description CSR7
+set interfaces xe-0/0/2 unit 0 family inet address 172.16.255.34/30
+set interfaces xe-0/0/3 unit 0 description CSR8
+set interfaces xe-0/0/3 unit 0 family inet address 172.16.255.38/30
+set interfaces xe-0/0/4 unit 0 description CSR9
+set interfaces xe-0/0/4 unit 0 family inet address 172.16.255.42/30
+set interfaces em0 unit 0 description "OOB MGMT"
+set interfaces em0 unit 0 family inet address 192.168.21.103/24
+set interfaces em1 unit 0 family inet address 169.254.0.2/24
+set interfaces lo0 unit 0 description "NETWORK MGMT"
+set interfaces lo0 unit 0 family inet address 10.255.255.103/32
+set forwarding-options storm-control-profiles default all
+set policy-options policy-statement EXPORT-ADDRESS term 1 from protocol direct
+set policy-options policy-statement EXPORT-ADDRESS term 1 from interface lo0.0
+set policy-options policy-statement EXPORT-ADDRESS term 1 then accept
+set policy-options policy-statement LOAD-BALANCE term 1 then load-balance per-packet
+set policy-options policy-statement LOAD-BALANCE term 1 then accept
+set routing-instances mgmt_junos routing-options static route 0.0.0.0/0 next-hop 192.168.21.1
+set routing-options router-id 10.255.255.103
+set routing-options autonomous-system 65203
+set routing-options forwarding-table export LOAD-BALANCE
+set routing-options forwarding-table chained-composite-next-hop ingress evpn
+set protocols bgp group UNDERLAY type external
+set protocols bgp group UNDERLAY export EXPORT-ADDRESS
+set protocols bgp group UNDERLAY local-as 65203
+set protocols bgp group UNDERLAY multipath multiple-as
+set protocols bgp group UNDERLAY neighbor 172.16.255.1 description CSR1
+set protocols bgp group UNDERLAY neighbor 172.16.255.1 peer-as 65101
+set protocols bgp group UNDERLAY neighbor 172.16.255.17 description CSR2
+set protocols bgp group UNDERLAY neighbor 172.16.255.17 peer-as 65102
+set protocols bgp group UNDERLAY neighbor 172.16.255.33 description CSR7
+set protocols bgp group UNDERLAY neighbor 172.16.255.33 peer-as 65307
+set protocols bgp group UNDERLAY neighbor 172.16.255.37 description CSR8
+set protocols bgp group UNDERLAY neighbor 172.16.255.37 peer-as 65308
+set protocols bgp group UNDERLAY neighbor 172.16.255.41 description CSR9
+set protocols bgp group UNDERLAY neighbor 172.16.255.41 peer-as 65309
+set protocols bgp group OVERLAY type internal
+set protocols bgp group OVERLAY local-address 10.255.255.103
+set protocols bgp group OVERLAY family evpn signaling
+set protocols bgp group OVERLAY local-as 65100
+set protocols bgp group OVERLAY multipath
+set protocols bgp group OVERLAY neighbor 10.255.255.107 description CSR7
+set protocols bgp group OVERLAY neighbor 10.255.255.108 description CSR8
+set protocols bgp group OVERLAY neighbor 10.255.255.109 description CSR9
+set protocols bgp group OVERLAY neighbor 10.255.255.104 description CSR4
+set protocols bgp group OVERLAY neighbor 10.255.255.105 description CSR5
+set protocols bgp group OVERLAY neighbor 10.255.255.106 description CSR6
+set protocols lldp interface all
+set protocols igmp-snooping vlan default

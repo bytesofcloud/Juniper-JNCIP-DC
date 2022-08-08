@@ -1,0 +1,61 @@
+﻿//// CSR1 \\\\
+
+set version 18.4R1.8
+set system login user admin uid 1776
+set system login user admin class super-user
+set system login user admin authentication encrypted-password "$6$T7V1tRQF$Xvf6IfHUylrDEWiX4fX7IhXA3MHIUZVfNlWgdXMPKf5l2sc752sNCYHjF.n/3VRiyqt1hx54RZBmJdaZkCt6W1"
+set system root-authentication encrypted-password "$6$p0ABeY0q$CX3RP1uC0DUWMAiWw7pFlVT/2CQ1EChBnMRVrzqiW/YE5BBhSHEnLyDJhAZpEfiKS9uIgRYMWphsmk3ol4rx71"
+set system services ssh root-login allow
+set system services ssh protocol-version v2
+set system services netconf ssh
+set system host-name CSR1
+set system domain-name bytesofcloud.local
+set system domain-search bytesofcloud.local
+set system time-zone America/Chicago
+set system management-instance
+set system syslog user * any emergency
+set system syslog file messages any notice
+set system syslog file messages authorization info
+set system syslog file interactive-commands interactive-commands any
+set system extensions providers juniper license-type juniper deployment-scope commercial
+set system extensions providers chef license-type juniper deployment-scope commercial
+set interfaces xe-0/0/0 unit 0 description CSR3
+set interfaces xe-0/0/0 unit 0 family inet address 172.16.255.1/30
+set interfaces xe-0/0/1 unit 0 description CSR4
+set interfaces xe-0/0/1 unit 0 family inet address 172.16.255.5/30
+set interfaces xe-0/0/2 unit 0 description CSR5
+set interfaces xe-0/0/2 unit 0 family inet address 172.16.255.9/30
+set interfaces xe-0/0/3 unit 0 description CSR6
+set interfaces xe-0/0/3 unit 0 family inet address 172.16.255.13/30
+set interfaces em0 unit 0 description "OOB MGMT"
+set interfaces em0 unit 0 family inet address 192.168.21.101/24
+set interfaces em1 unit 0 family inet address 169.254.0.2/24
+set interfaces lo0 unit 0 description "NETWORK MGMT"
+set interfaces lo0 unit 0 family inet address 10.255.255.101/32
+set forwarding-options storm-control-profiles default all
+set policy-options policy-statement EXPORT-ADDRESS term 1 from protocol direct
+set policy-options policy-statement EXPORT-ADDRESS term 1 from interface lo0.0
+set policy-options policy-statement EXPORT-ADDRESS term 1 then accept
+set policy-options policy-statement LOAD-BALANCE term 1 then load-balance per-packet
+set policy-options policy-statement LOAD-BALANCE term 1 then accept
+set routing-instances mgmt_junos routing-options static route 0.0.0.0/0 next-hop 192.168.21.1
+set routing-options router-id 10.255.255.101
+set routing-options autonomous-system 65101
+set routing-options forwarding-table export LOAD-BALANCE
+set protocols bgp group UNDERLAY type external
+set protocols bgp group UNDERLAY export EXPORT-ADDRESS
+set protocols bgp group UNDERLAY local-as 65101
+set protocols bgp group UNDERLAY multipath multiple-as
+set protocols bgp group UNDERLAY neighbor 172.16.255.2 description CSR3
+set protocols bgp group UNDERLAY neighbor 172.16.255.2 peer-as 65203
+set protocols bgp group UNDERLAY neighbor 172.16.255.6 description CSR4
+set protocols bgp group UNDERLAY neighbor 172.16.255.6 peer-as 65204
+set protocols bgp group UNDERLAY neighbor 172.16.255.10 description CSR5
+set protocols bgp group UNDERLAY neighbor 172.16.255.10 peer-as 65205
+set protocols bgp group UNDERLAY neighbor 172.16.255.14 description CSR6
+set protocols bgp group UNDERLAY neighbor 172.16.255.14 peer-as 65206
+set protocols lldp interface all
+set protocols igmp-snooping vlan default
+set vlans default vlan-id 1
+
+
